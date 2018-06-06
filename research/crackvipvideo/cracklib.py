@@ -8,7 +8,7 @@ import sys
 import os
 import requests
 
-debug = True
+debug = False
 headers = {
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "Accept-Encoding": "utf-8,gb2312",   #Accept-Encoding: gzip, deflate #最好不要写或者写成Accept-Encoding: utf-8,gb2312
@@ -150,7 +150,19 @@ class DownloadResourse():
                 # all_content = request.urlopen(new_url).read().decode('utf-8') # 获取M3U8的文件内容
                 file_line = all_content.splitlines()  # 读取文件里的每一行
             else:
-                pass
+                # TODO 其他仓库地址
+                if(debug):
+                    print('from other url,if fail contact me:')
+                oldwords_pat = '.*/(.*)'
+                old_words = re.findall(oldwords_pat, url)[0]
+                newwords_pat = '[\s\S]*\n(.*)'
+                newwords = re.findall(newwords_pat, all_content)[0]
+                new_url = url.replace(old_words, newwords)
+                if(debug):
+                    print("real url is " + new_url)
+                sub_all_content = requests.get(new_url).text
+                # all_content = request.urlopen(new_url).read().decode('utf-8') # 获取M3U8的文件内容
+                file_line = sub_all_content.splitlines()  # 读取文件里的每一行
 
         # 通过判断文件头来确定是否是M3U8文件
         if file_line[0] != "#EXTM3U":
@@ -227,23 +239,31 @@ class MergeFile():
         tempname = 1
         content = ""
 
-        lists = os.listdir(source_dir)
+        lists = [(i, os.stat(source_dir + i).st_mtime) for i in os.listdir(source_dir)]
+        '''
+        lists格式
+        [
+            ('026d4c8b18b000.ts', 1528077232.3878698),
+            ('026d4c8b18b001.ts', 1528077233.467319),
+            ...
+        ]
+        '''
+        lists = sorted(lists, key=lambda x: x[1])   # x[0] = '026d4c8b18b000.ts' x[1] = 1528077232.3878698
         groups = [lists[i : (i + 50)] for i in range(0, len(lists), 50)]
-
+        
         for lis in groups:
             cmd = "cd %s && ffmpeg -i \"concat:" %output_dir
             for file in lis:
                 if file != '.DS_Store':
-                    file_path = os.path.join(source_dir, file)
+                    file_path = os.path.join(source_dir, file[0])
                     cmd += file_path + '|'
             cmd = cmd[:-1]  # 去掉最后的符号|
             # cmd += '" -bsf:a aac_adtstoasc -c copy -vcodec copy %s.mp4' %tempname
-            cmd += '" -acodec copy -vcodec copy -f mp4 %s.mp4' %tempname
+            cmd += '" -y -ac 2 -acodec copy -vcodec copy -f mp4 %s.mp4' %tempname
             # ffmpeg -i concat:"out002.ts|out003.ts|out004.ts" -acodec copy -vcodec copy -f mp4 cat.mp4
             try:
                 os.system(cmd)
                 content += "file '%s.mp4'\n" %tempname
-                # print("~~~~~~~~~~~~~~···content%s" %content)
                 tempname = tempname + 1
             except:
                 print("Unexpected error")
