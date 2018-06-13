@@ -1,0 +1,39 @@
+Wed, 13 Jun 2018 10:01:37 log.py[line:146] INFO Scrapy 1.5.0 started (bot: WebHub)
+Wed, 13 Jun 2018 10:01:37 log.py[line:149] INFO Versions: lxml 4.2.1.0, libxml2 2.9.5, cssselect 1.0.3, parsel 1.4.0, w3lib 1.19.0, Twisted 18.4.0, Python 3.6.4 (v3.6.4:d48eceb, Dec 19 2017, 06:04:45) [MSC v.1900 32 bit (Intel)], pyOpenSSL 18.0.0 (OpenSSL 1.1.0h  27 Mar 2018), cryptography 2.2.2, Platform Windows-8.1-6.3.9600-SP0
+Wed, 13 Jun 2018 10:01:37 crawler.py[line:38] INFO Overridden settings: {'BOT_NAME': 'WebHub', 'CONCURRENT_REQUESTS': 20, 'DEPTH_PRIORITY': 1, 'DOWNLOAD_DELAY': 1, 'FEED_FORMAT': 'CSV', 'FEED_URI': '/Users/xiyouMc/Documents/pornhub.csv', 'NEWSPIDER_MODULE': 'WebHub.spiders', 'REDIRECT_ENABLED': False, 'ROBOTSTXT_OBEY': True, 'SCHEDULER_DISK_QUEUE': 'scrapy.squeues.PickleFifoDiskQueue', 'SCHEDULER_MEMORY_QUEUE': 'scrapy.squeues.FifoMemoryQueue', 'SPIDER_MODULES': ['WebHub.spiders']}
+Wed, 13 Jun 2018 10:01:37 middleware.py[line:53] INFO Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.feedexport.FeedExporter',
+ 'scrapy.extensions.logstats.LogStats']
+Wed, 13 Jun 2018 10:01:40 middleware.py[line:53] INFO Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'WebHub.middlewares.UserAgentMiddleware',
+ 'WebHub.middlewares.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+Wed, 13 Jun 2018 10:01:40 middleware.py[line:53] INFO Enabled spider middlewares:
+['scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+Wed, 13 Jun 2018 10:01:40 middleware.py[line:53] INFO Enabled item pipelines:
+[]
+Wed, 13 Jun 2018 10:01:40 engine.py[line:256] INFO Spider opened
+Wed, 13 Jun 2018 10:01:40 logstats.py[line:48] INFO Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+Wed, 13 Jun 2018 10:01:40 telnet.py[line:60] DEBUG Telnet console listening on 127.0.0.1:6023
+Wed, 13 Jun 2018 10:02:01 retry.py[line:75] DEBUG Retrying <GET https://www.pornhub.com/robots.txt> (failed 1 times): TCP connection timed out: 10060: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。.
+Wed, 13 Jun 2018 10:02:16 crawler.py[line:258] INFO Received SIGINT, shutting down gracefully. Send again to force 
+Wed, 13 Jun 2018 10:02:16 engine.py[line:295] INFO Closing spider (shutdown)
+Wed, 13 Jun 2018 10:02:16 crawler.py[line:265] INFO Received SIGINT twice, forcing unclean shutdown
+Wed, 13 Jun 2018 10:02:16 retry.py[line:75] DEBUG Retrying <GET https://www.pornhub.com/robots.txt> (failed 2 times): An error occurred while connecting: [Failure instance: Traceback (failure with no frames): <class 'twisted.internet.error.ConnectionLost'>: Connection to the other side was lost in a non-clean fashion: Connection lost.
+].
