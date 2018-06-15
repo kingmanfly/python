@@ -1,7 +1,6 @@
 # encoding=utf-8
 import random
 import json
-import WebHub.aa
 from WebHub.my_user_agents import agents
 
 class UserAgentMiddleware(object):

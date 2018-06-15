@@ -17,8 +17,6 @@ class Spider(CrawlSpider):
 
     test = True
     def start_requests(self):
-        print('start_requests')
-        print(self.test)
         for ph_type in self.start_urls:
             yield Request(url='https://www.pornhub.com/%s' % ph_type,
                           callback=self.parse_ph_key)
