@@ -7,8 +7,10 @@ import time
 import sys
 import os
 import requests
+import ssl
 
-debug = False
+ssl._create_default_https_context = ssl._create_unverified_context
+debug = True
 headers = {
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "Accept-Encoding": "utf-8,gb2312",   #Accept-Encoding: gzip, deflate #最好不要写或者写成Accept-Encoding: utf-8,gb2312
@@ -88,7 +90,6 @@ class DownloadResourse():
 
     def download(self, url, download_path):
         new_url = ''
-        url
         if(debug):
             print('download url is ' + url)
             print('local path is ' + download_path)
@@ -133,24 +134,39 @@ class DownloadResourse():
                 sub_all_content = requests.get(new_url).text
                 # all_content = request.urlopen(new_url).read().decode('utf-8') # 获取M3U8的文件内容
                 file_line = sub_all_content.splitlines()  # 读取文件里的每一行
-            elif url.find('cdn.letv-cdn.com') != -1:
+            elif ((url.find('cdn.letv-cdn.com') != -1) or (url.find('eth.ppzuida.com') != -1)):
                 # 换一种拼接方式
                 if(debug):
-                    print('from cdn.letv-cdn.com')
-                oldwords_pat = 'https://.*?/(.*)'
+                    print('from cdn.letv-cdn.com || eth.ppzuida.com')
+                oldwords_pat = 'http[s]?://.*?/(.*)'
                 old_words = re.findall(oldwords_pat, url)[0]
-                # print(old_words)
+                if(debug):
+                    print(old_words)
                 newwords_pat = '.*?/(.*.m3u8).*'                    
                 newwords = re.findall(newwords_pat, all_content)[0]
-                # print(all_content)
-                # print("newwords " + newwords)
+                if(debug):
+                    print(all_content)
+                    print("newwords " + newwords)
                 new_url = url.replace(old_words, newwords)
-                # print(new_url)
+                if(debug):
+                    print(new_url)
                 all_content = requests.get(new_url).text
                 # all_content = request.urlopen(new_url).read().decode('utf-8') # 获取M3U8的文件内容
                 file_line = all_content.splitlines()  # 读取文件里的每一行
             else:
-                # TODO 其他仓库地址
+                '''
+                TODO 其他仓库地址更换最后的index.m38u,
+                兼容:
+                1. 下载url：https://video.letv-cdn.com/20180223/63M9f5sY/index.m3u8
+                内容如下：
+                #EXTM3U
+                #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1000000,RESOLUTION=1280x528
+                1000kb/hls/index.m3u8
+                解析成这样：https://video.letv-cdn.com/20180223/63M9f5sY/1000kb/hls/index.m3u8
+
+                2. download url is http://cn2.okokyun.com/20180128/4dozvYwY/index.m3u8
+                real url is http://cn2.okokyun.com/20180128/4dozvYwY/800kb/hls/index.m3u8
+                '''
                 if(debug):
                     print('from other url,if fail contact me:')
                 oldwords_pat = '.*/(.*)'
@@ -200,8 +216,8 @@ class DownloadResourse():
                     # 拼出ts片段的URL
                     c_fule_name = str(file_line[index + 1]) # index + 1是取下一行
                     c_fule_name_new = c_fule_name
-                    if new_url.find('cdn.letv-cdn.com') != -1:
-                        oldwords_pat = 'https://.*?/(.*)'
+                    if new_url.find('cdn.letv-cdn.com') != -1 or new_url.find('eth.ppzuida.com') != -1:
+                        oldwords_pat = 'http[s]?://.*?/(.*)'
                         fule_pat = '.*/(.*)'
                         c_fule_name_new = re.findall(fule_pat, c_fule_name)[0]
                     else:
@@ -209,12 +225,45 @@ class DownloadResourse():
                     old_words = re.findall(oldwords_pat, new_url)[0]
                     download_url = new_url.replace(old_words, c_fule_name)
                     local_name = download_path + "/" + c_fule_name_new
-                    # print("local_name = " + local_name)
+                    if False:   #调试用
+                        print(download_url)
+                        return
                     request.urlretrieve(url=download_url,filename=local_name)
             if unknow:
                 raise BaseException("未找到对应的下载链接")
             else:
                 print(u"下载完成")
+
+    def simpledownload(self, m3u8content, download_path):
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            # Accept-Encoding: gzip, deflate #最好不要写或者写成Accept-Encoding: utf-8,gb2312
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36",
+            "Connection": "keep-alive",     #或者"Proxy-Connection": "keep-alive"
+            "referer":"qq.com"  #一般为它的首页
+        }
+        cjar = cookiejar.CookieJar()
+        opener = request.build_opener(request.HTTPCookieProcessor(cjar))
+        headall = []
+        for key,value in headers.items():
+            item = (key,value)
+            headall.append(item)
+        opener.addheaders = headall
+        request.install_opener(opener)
+        file_line = m3u8content.splitlines()  # 读取文件里的每一行
+        for index, line in enumerate(file_line):
+            if "EXTINF" in line:  #根据规律得知，每一行都是取下一行的内容  
+                # 拼出ts片段的URL
+                c_fule_name = str(file_line[index + 1]) # index + 1是取下一行
+                c_fule_name_new = c_fule_name
+                fule_pat = '.*'
+                c_fule_name_new = re.findall(fule_pat, c_fule_name)[0]
+                download_url = 'https://w.bwzybf.com/2018/06/15/5oMLtdRKnCOPNTJK/' + c_fule_name_new
+                # download_url = 'http://eth.ppzuida.com/20171122/OuFFyQ3R/800kb/hls/' + c_fule_name_new
+                local_name = download_path + "/" + c_fule_name_new
+                # requests.get(download_url)
+                request.urlretrieve(url=download_url, filename=local_name)
 
 class MergeFile():
     '''

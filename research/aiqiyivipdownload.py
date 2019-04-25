@@ -11,9 +11,10 @@ import os
 import requests
 
 # 要获取的视频地址
+videourl = 'http://www.iqiyi.com/v_19rrel12t4.html' #21克拉
 videourl1 = 'http://www.iqiyi.com/v_19rrlhpgbg.html' #冰雪奇缘
 videourl2 = 'http://www.iqiyi.com/v_19rrbrpwok.html#vfrm=2-4-0-1' #白雪公主
-videourl = 'http://www.iqiyi.com/v_19rr7plwdc.html' # 红海行动
+videourl3 = 'http://www.iqiyi.com/v_19rr7plwdc.html' # 红海行动
 videourl4 = 'http://www.iqiyi.com/v_19rr7pe5k4.html'   #芳华
 # 解析vip的网址
 # 步骤一、get的url

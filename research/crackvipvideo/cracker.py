@@ -1,15 +1,44 @@
-import os
 import json
 
 from cracklib import ParseVideoUrl
 from cracklib import DownloadResourse
 from cracklib import MergeFile
 
-urldict = { 
+urldict = {
+    'nima':
+        {   
+            'url' : 'http://www.iqiyi.com/v_19rr7pkf30.html',
+            'name' : 'nima'     # 我是你妈
+        },
+    'jizhang':
+        {   
+            'url' : 'http://www.iqiyi.com/v_19rrfowvh8.html',
+            'name' : 'jizhang'     # 萨利机长
+        },
+    'qingdi':
+        {   
+            'url' : 'http://www.iqiyi.com/v_19rrk3nops.html',
+            'name' : 'qingdi'     # 全民情敌
+        },
+    'kekexili':
+        {   
+            'url' : 'http://www.iqiyi.com/v_19rrh1gubo.html',
+            'name' : 'kekexili'     # 可可西里的美丽传说
+        },
+    '21kela':
+        {   
+            'url' : 'http://www.iqiyi.com/v_19rrel12t4.html',
+            'name' : '21kela'     # 21克拉
+        },
     'bingxue':
         {   
             'url' : 'http://www.iqiyi.com/v_19rrlhpgbg.html',   # 冰雪奇缘
             'name' : 'bingxue'     # 红海行动
+        },
+    'xinxiju':
+        {   
+            'url' : 'https://www.iqiyi.com/v_19rqrgpp5k.html',   # 新喜剧之王
+            'name' : 'xinxiju'     # 新喜剧之王
         },
     'honghai':
         {   
@@ -18,7 +47,7 @@ urldict = {
         }
     }
 
-parse_vidio = ParseVideoUrl(urldict['bingxue']['url'])
+parse_vidio = ParseVideoUrl(urldict['honghai']['url'])
 
 # 步骤一、准备线路
 parse_vidio.prepare_line()
@@ -34,7 +63,7 @@ parse_vidio.prepare_load_goal_url(jsondata)
 download_url = parse_vidio.load_goal_url(jsondata)
 
 # 步骤五、开始下载
-name = urldict['bingxue']['name']
+name = urldict['nima']['name']
 downloaddir = 'D:/crackvideo/download/' + name + '/'
 
 downloadresource = DownloadResourse()
